@@ -1,7 +1,7 @@
 const WIDTH = 200
 const HEIGHT = 60
 const BASELINE = 30
-const AMPLITUDE = 22
+const AMPLITUDE = 18
 
 export function EcgStrip({ data, connected }: { data: number[]; connected: boolean }) {
   if (!connected) {
