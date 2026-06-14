@@ -13,49 +13,7 @@ import {
   TriangleAlert,
 } from "lucide-react"
 import type { Athlete } from "@/lib/types"
-
-function EcgStrip({ data, connected }: { data: number[]; connected: boolean }) {
-  if (!connected) {
-    return (
-      <div className="relative rounded-lg bg-gray-800 px-2 py-1">
-        <span className="absolute left-2 top-1 text-xs text-gray-500">ECG</span>
-        <svg width="100%" height="60" viewBox="0 0 200 60" preserveAspectRatio="none">
-          <line x1="0" y1="30" x2="200" y2="30" stroke="#374151" strokeWidth="1" strokeDasharray="4 4" />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-sm font-mono text-gray-600">
-          -- --
-        </span>
-      </div>
-    )
-  }
-
-  const n = data.length
-  const width = 200
-  // map each value to coordinates; baseline at y=30, amplitude scaled by 24
-  const toPoints = (offsetX: number) =>
-    data
-      .map((v, i) => {
-        const x = (i / (n - 1)) * width + offsetX
-        const y = 30 - v * 24
-        return `${x.toFixed(1)},${y.toFixed(1)}`
-      })
-      .join(" ")
-
-  // tile twice so the scroll animation loops seamlessly
-  const points = `${toPoints(0)} ${toPoints(width)}`
-
-  return (
-    <div className="relative overflow-hidden rounded-lg bg-gray-800 px-2 py-1">
-      <span className="absolute left-2 top-1 z-10 text-xs text-gray-500">ECG</span>
-      <svg width="100%" height="60" viewBox="0 0 200 60" preserveAspectRatio="none">
-        <line x1="0" y1="30" x2="200" y2="30" stroke="#374151" strokeWidth="1" />
-        <g className="animate-ecg-scroll">
-          <polyline points={points} stroke="#22C55E" strokeWidth="1.5" fill="none" />
-        </g>
-      </svg>
-    </div>
-  )
-}
+import { EcgStrip } from "@/components/ecg-strip"
 
 function HeartRate({ bpm }: { bpm: number }) {
   const isAlert = bpm < 50 || bpm > 160

@@ -1,6 +1,7 @@
 "use client"
 
-import { UserPlus, Zap } from "lucide-react"
+import Link from "next/link"
+import { ArrowLeft, UserPlus, Zap } from "lucide-react"
 
 export function Navbar({
   count,
@@ -16,8 +17,18 @@ export function Navbar({
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         {/* Left: logo + title */}
         <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="mr-1 flex items-center gap-1 rounded-md px-1.5 py-1 text-gray-500 transition-colors hover:text-white"
+            aria-label="Volver al inicio"
+          >
+            <ArrowLeft size={18} />
+          </Link>
           <Zap className="text-blue-500" size={22} />
           <span className="text-lg font-semibold text-white">SmartVest Monitor</span>
+          <span className="hidden rounded bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-400 sm:inline">
+            Simulador
+          </span>
         </div>
 
         {/* Center: live status pill */}

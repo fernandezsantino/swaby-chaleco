@@ -34,31 +34,32 @@ function generateConnected(): boolean {
   return Math.random() < 0.95
 }
 
-// Realistic-ish ECG: flat near 0 with a QRS+T complex every ~8 values.
-// `noisy` is disabled for the initial (SSR) render to avoid hydration mismatch.
+// One smooth PQRST heartbeat modeled as a sum of Gaussian bumps.
+// t runs [0,1) within a single beat -> produces rounded, sinusoidal curves
+// instead of sharp triangular spikes.
+function ecgBeat(t: number): number {
+  const g = (center: number, width: number, amp: number) =>
+    amp * Math.exp(-((t - center) ** 2) / (2 * width * width))
+  return (
+    g(0.18, 0.028, 0.14) + // P wave
+    g(0.38, 0.013, -0.12) + // Q dip
+    g(0.42, 0.011, 1.0) + // R peak
+    g(0.46, 0.014, -0.3) + // S dip
+    g(0.68, 0.05, 0.34) // T wave
+  )
+}
+
+// Smooth ECG: dense sampling of the PQRST beat morphology so the rendered
+// curve looks sinusoidal. `noisy` is disabled for the initial (SSR) render
+// to avoid hydration mismatch.
 function generateEcg(noisy = true): number[] {
+  const total = 90
+  const beats = 3
   const data: number[] = []
-  for (let i = 0; i < 40; i++) {
-    const phase = i % 8
-    let value = 0
-    switch (phase) {
-      case 0:
-        value = -0.3 // Q wave dip
-        break
-      case 1:
-        value = 1.0 // R peak
-        break
-      case 2:
-        value = -0.2 // S dip
-        break
-      case 4:
-        value = 0.3 // T wave
-        break
-      default:
-        value = 0 // baseline
-    }
-    // tiny noise so it feels alive (skipped on the deterministic initial render)
-    if (noisy) value += (Math.random() - 0.5) * 0.05
+  for (let i = 0; i < total; i++) {
+    const t = ((i / total) * beats) % 1
+    let value = ecgBeat(t)
+    if (noisy) value += (Math.random() - 0.5) * 0.025
     data.push(Number(value.toFixed(3)))
   }
   return data
