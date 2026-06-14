@@ -6,11 +6,14 @@ import {
   Armchair,
   Bluetooth,
   BluetoothOff,
+  Calendar,
   Heart,
   Minus,
   PersonStanding,
+  Ruler,
   Thermometer,
   TriangleAlert,
+  Weight,
 } from "lucide-react"
 import type { Athlete } from "@/lib/types"
 import { EcgStrip } from "@/components/ecg-strip"
@@ -118,24 +121,50 @@ export function AthleteCard({ athlete }: { athlete: Athlete }) {
       }`}
     >
       {/* 1. Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="rounded bg-blue-500/20 px-2 py-0.5 text-sm font-bold text-blue-400">{athlete.number}</span>
-          <span className="text-base font-semibold text-white">{athlete.name}</span>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="rounded bg-blue-500/20 px-2 py-0.5 text-sm font-bold text-blue-400">{athlete.number}</span>
+            <span className="text-base font-semibold text-white">{athlete.name}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            {athlete.connected ? (
+              <>
+                <Bluetooth className="text-blue-400" size={16} />
+                <span className="text-xs text-green-400">Conectado</span>
+              </>
+            ) : (
+              <>
+                <BluetoothOff className="text-gray-600" size={16} />
+                <span className="text-xs text-gray-500">Sin señal</span>
+              </>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          {athlete.connected ? (
-            <>
-              <Bluetooth className="text-blue-400" size={16} />
-              <span className="text-xs text-green-400">Conectado</span>
-            </>
-          ) : (
-            <>
-              <BluetoothOff className="text-gray-600" size={16} />
-              <span className="text-xs text-gray-500">Sin señal</span>
-            </>
-          )}
-        </div>
+
+        {/* Biometric profile */}
+        {(athlete.age != null || athlete.weight != null || athlete.height != null) && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {athlete.age != null && (
+              <span className="flex items-center gap-1 rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-300">
+                <Calendar className="text-gray-500" size={12} />
+                {athlete.age} años
+              </span>
+            )}
+            {athlete.weight != null && (
+              <span className="flex items-center gap-1 rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-300">
+                <Weight className="text-gray-500" size={12} />
+                {athlete.weight} kg
+              </span>
+            )}
+            {athlete.height != null && (
+              <span className="flex items-center gap-1 rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-300">
+                <Ruler className="text-gray-500" size={12} />
+                {athlete.height} cm
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 2. ECG */}
